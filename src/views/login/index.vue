@@ -1,18 +1,27 @@
 <template>
   <div id="login">
-    这是登录页面
-    <el-button>默认按钮</el-button>
-    <el-button type="primary">主要按钮</el-button>
-    <el-button type="success" disabled>成功按钮</el-button>
-    <el-button type="info">信息按钮</el-button>
-    <el-button type="warning">警告按钮</el-button>
-    <el-button type="danger">危险按钮</el-button>
+    <div class="login-wrap">
+      <ul class="menu-tab">
+        <li class=("current":isActive) v-for="item in menuTab" :key="item.id">{{ item.text }}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "login"
+  name: "login",
+  data() {
+    return {
+      menuTab: [{ text: "登录" }, { text: "注册" }],
+      isActive:true
+    };
+  },
+  created() {},
+  mounted() {},
+  methods: {
+    //vue 数据驱动视频渲染
+  }
 };
 </script>
 
@@ -20,5 +29,24 @@ export default {
 #login {
   height: 100vh;
   background-color: #334a5f;
+}
+.lohin-wrap {
+  width: 330px;
+  margin: auto;
+}
+.menu-tab {
+  text-align: center;
+  li {
+    display: inline-block;
+    width: 88px;
+    line-height: 36px;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+  }
+}
+.current {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>
