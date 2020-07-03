@@ -18,22 +18,39 @@
         class="login-from"
         size="medium"
       >
-        <el-form-item prop="pass" class="item-from">
+        <el-form-item prop="username" class="item-from">
           <label>邮箱</label>
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item prop="checkPass" class="item-from">
+        <el-form-item prop="password" class="item-from">
           <label>密码</label>
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          <el-input
+            type="password"
+            v-model="ruleForm.password"
+            autocomplete="off"
+            minlength="6"
+            maxlength="20"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item prop="age" class="item-from">
+        <el-form-item prop="code" class="item-from">
           <label>验证码</label>
-          <el-input v-model.number="ruleForm.age"></el-input>
+          <el-row :gutter="11">
+            <el-col :span="16">
+              <div>
+                <el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div>
+                <el-button type="success" class="block">获取验证码</el-button>
+              </div>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block">提交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -45,37 +62,36 @@ export default {
   name: "login",
 
   data() {
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("年龄不能为空"));
+    
+    //验证用户名
+    var validateUsername = (rule, value, callback) => {
+      let reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      if (value === "") {
+        callback(new Error("请输入用户名"));
+      } else if (!reg.test(value)) {
+        callback(new Error("用户名格式有误"));
+      } else {
+        callback(); //true
       }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error("请输入数字值"));
-        } else {
-          if (value < 18) {
-            callback(new Error("必须年满18岁"));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
     };
-    var validatePass = (rule, value, callback) => {
+    //验证密码
+    var validatePassword = (rule, value, callback) => {
+      let reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
+
       if (value === "") {
         callback(new Error("请输入密码"));
+      } else if (!reg.test(value)) {
+        callback(new Error("密码为6-20的数字加字母"));
       } else {
-        if (this.ruleForm.checkPass !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
-        }
         callback();
       }
     };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.pass) {
-        callback(new Error("两次输入密码不一致!"));
+    //验证验证码
+    var validateCode = (rule, value, callback) => {
+      if (value=== "") {
+        callback(new Error("请输入验证码"));
+      }else if(!Number.isInteger(value)) {
+        callback(new Error("请输入数字值"));
       } else {
         callback();
       }
@@ -86,14 +102,15 @@ export default {
         { text: "注册", current: false }
       ],
       ruleForm: {
-        pass: "",
-        checkPass: "",
-        age: ""
+        username: "",
+        password: "",
+        code: ""
       },
+      //验证规则
       rules: {
-        pass: [{ validator: validatePass, trigger: "blur" }],
-        checkPass: [{ validator: validatePass2, trigger: "blur" }],
-        age: [{ validator: checkAge, trigger: "blur" }]
+        username: [{ validator: validateUsername, trigger: "blur" }], //trigger 失去焦点触发
+        password: [{ validator: validatePassword, trigger: "blur" }],
+        code: [{ validator: validateCode, trigger: "blur" }]
       }
     };
   },
@@ -104,7 +121,9 @@ export default {
   //写函数的地方
   methods: {
     toggleMenn(data) {
-      this.menuTab.forEach((elem, index) => {
+      this.menuTab.forEach(elem => {
+        console.log(data);
+
         elem.current = false;
       });
       //高光
@@ -119,7 +138,7 @@ export default {
           return false;
         }
       });
-    },
+    }
   }
 };
 </script>
@@ -130,8 +149,6 @@ export default {
   background-color: #334a5f;
 }
 .lohin-wrap {
-  width: 330px;
-  margin: auto;
 }
 .menu-tab {
   text-align: center;
@@ -157,10 +174,17 @@ export default {
     display: block;
     font-size: 14px;
     margin-bottom: 4px;
-    color:#fff;
+    color: #fff;
   }
   .item-from {
-  margin-bottom: 13px;
+    margin-bottom: 13px;
+  }
+  .block {
+    width: 100%;
+    display: block;
+  }
+  .login-btn {
+    margin-top: 19px;
   }
 }
 </style>

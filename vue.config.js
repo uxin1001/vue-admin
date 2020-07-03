@@ -9,6 +9,7 @@ module.exports = {
   /**
    * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
    **/
+  
   chainWebpack: (config) => {
   },
   configureWebpack: (config) => {
@@ -63,6 +64,7 @@ module.exports = {
       warnings: true,
       errors: true
     },
+    // eslint-disable-next-line no-unused-vars
     before: app => {
     }
   },
