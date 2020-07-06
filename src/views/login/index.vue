@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { stripscript, validateEmail, vdPassword, vdCode } from "@/utils/validate";
 export default {
   name: "login",
 
@@ -65,10 +66,9 @@ export default {
     
     //验证用户名
     var validateUsername = (rule, value, callback) => {
-      let reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
       if (value === "") {
         callback(new Error("请输入用户名"));
-      } else if (!reg.test(value)) {
+      } else if (validateEmail(value)) {
         callback(new Error("用户名格式有误"));
       } else {
         callback(); //true
@@ -76,11 +76,11 @@ export default {
     };
     //验证密码
     var validatePassword = (rule, value, callback) => {
-      let reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
-
+      this.ruleForm.password = stripscript(value);
+      value = this.ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码"));
-      } else if (!reg.test(value)) {
+      } else if (vdPassword(value)) {
         callback(new Error("密码为6-20的数字加字母"));
       } else {
         callback();
@@ -90,8 +90,8 @@ export default {
     var validateCode = (rule, value, callback) => {
       if (value=== "") {
         callback(new Error("请输入验证码"));
-      }else if(!Number.isInteger(value)) {
-        callback(new Error("请输入数字值"));
+      }else if(vdCode(value)) {
+        callback(new Error("验证码格式有误"));
       } else {
         callback();
       }
