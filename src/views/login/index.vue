@@ -5,9 +5,10 @@
         <li
           v-for="item in menuTab"
           :key="item.id"
-          :class="{'current' : item.current}"
+          :class="{ current: item.current }"
           @click="toggleMenn(item)"
-        >{{ item.text }}</li>
+        >{{ item.text }}
+        </li>
       </ul>
       <!-- 表单 start -->
       <el-form
@@ -20,7 +21,11 @@
       >
         <el-form-item prop="username" class="item-from">
           <label>邮箱</label>
-          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+          <el-input
+            type="text"
+            v-model="ruleForm.username"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
 
         <el-form-item prop="password" class="item-from">
@@ -28,6 +33,17 @@
           <el-input
             type="password"
             v-model="ruleForm.password"
+            autocomplete="off"
+            minlength="6"
+            maxlength="20"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="repeatPassword" class="item-from">
+          <label>确认密码</label>
+          <el-input
+            type="password"
+            v-model="ruleForm.repeatPassword"
             autocomplete="off"
             minlength="6"
             maxlength="20"
@@ -50,7 +66,13 @@
           </el-row>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block">提交</el-button>
+          <el-button 
+            type="danger"
+            @click="submitForm('ruleForm')"
+            class="login-btn block"
+          >
+            提交
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -58,12 +80,16 @@
 </template>
 
 <script>
-import { stripscript, validateEmail, vdPassword, vdCode } from "@/utils/validate";
+import {
+  stripscript,
+  validateEmail,
+  vdPassword,
+  vdCode
+} from "@/utils/validate";
 export default {
   name: "login",
 
   data() {
-    
     //验证用户名
     var validateUsername = (rule, value, callback) => {
       if (value === "") {
@@ -86,11 +112,23 @@ export default {
         callback();
       }
     };
+    //验证确认密码
+    var validateRepeatPassword = (rule, value, callback) => {
+      this.ruleForm.repeatPassword = stripscript(value);
+      value = this.ruleForm.repeatPassword;
+      if (value === "") {
+        callback(new Error("请输入确认密码"));
+      } else if (value != this.ruleForm.password) {
+        callback(new Error("两次密码不一致，请重新输入"));
+      } else {
+        callback();
+      }
+    };
     //验证验证码
     var validateCode = (rule, value, callback) => {
-      if (value=== "") {
+      if (value === "") {
         callback(new Error("请输入验证码"));
-      }else if(vdCode(value)) {
+      } else if (vdCode(value)) {
         callback(new Error("验证码格式有误"));
       } else {
         callback();
@@ -104,12 +142,14 @@ export default {
       ruleForm: {
         username: "",
         password: "",
+        repeatPassword: "",
         code: ""
       },
       //验证规则
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }], //trigger 失去焦点触发
         password: [{ validator: validatePassword, trigger: "blur" }],
+        repeatPassword: [{ validator: validateRepeatPassword, trigger: "blur" }],
         code: [{ validator: validateCode, trigger: "blur" }]
       }
     };
