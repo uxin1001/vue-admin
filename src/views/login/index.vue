@@ -39,7 +39,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item prop="repeatPassword" class="item-from">
+        <el-form-item prop="repeatPassword" class="item-from" v-show="model === 'register'">
           <label>确认密码</label>
           <el-input
             type="password"
@@ -114,6 +114,7 @@ export default {
     };
     //验证确认密码
     var validateRepeatPassword = (rule, value, callback) => {
+      if(this.model === "login"){callback()};
       this.ruleForm.repeatPassword = stripscript(value);
       value = this.ruleForm.repeatPassword;
       if (value === "") {
@@ -136,8 +137,8 @@ export default {
     };
     return {
       menuTab: [
-        { text: "登录", current: true },
-        { text: "注册", current: false }
+        { text: "登录", current: true, type:"login"},
+        { text: "注册", current: false, type:"register"}
       ],
       ruleForm: {
         username: "",
@@ -145,6 +146,8 @@ export default {
         repeatPassword: "",
         code: ""
       },
+      //模块值
+      model:"login",
       //验证规则
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }], //trigger 失去焦点触发
@@ -161,13 +164,14 @@ export default {
   //写函数的地方
   methods: {
     toggleMenn(data) {
+      console.log(data);
       this.menuTab.forEach(elem => {
-        console.log(data);
-
         elem.current = false;
       });
       //高光
       data.current = true;
+      //模块的切换
+      this.model = data.type;
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
