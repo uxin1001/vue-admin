@@ -7,7 +7,8 @@
           :key="item.id"
           :class="{ current: item.current }"
           @click="toggleMenn(item)"
-        >{{ item.text }}
+        >
+          {{ item.text }}
         </li>
       </ul>
       <!-- 表单 start -->
@@ -39,7 +40,11 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item prop="repeatPassword" class="item-from" v-show="model === 'register'">
+        <el-form-item
+          prop="repeatPassword"
+          class="item-from"
+          v-show="model === 'register'"
+        >
           <label>确认密码</label>
           <el-input
             type="password"
@@ -55,7 +60,11 @@
           <el-row :gutter="11">
             <el-col :span="16">
               <div>
-                <el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input>
+                <el-input
+                  v-model.number="ruleForm.code"
+                  minlength="6"
+                  maxlength="6"
+                ></el-input>
               </div>
             </el-col>
             <el-col :span="8">
@@ -66,7 +75,7 @@
           </el-row>
         </el-form-item>
         <el-form-item>
-          <el-button 
+          <el-button
             type="danger"
             @click="submitForm('ruleForm')"
             class="login-btn block"
@@ -84,7 +93,7 @@ import {
   stripscript,
   validateEmail,
   vdPassword,
-  vdCode
+  vdCode,
 } from "@/utils/validate";
 export default {
   name: "login",
@@ -114,7 +123,9 @@ export default {
     };
     //验证确认密码
     var validateRepeatPassword = (rule, value, callback) => {
-      if(this.model === "login"){callback()};
+      if (this.model === "login") {
+        callback();
+      }
       this.ruleForm.repeatPassword = stripscript(value);
       value = this.ruleForm.repeatPassword;
       if (value === "") {
@@ -137,24 +148,26 @@ export default {
     };
     return {
       menuTab: [
-        { text: "登录", current: true, type:"login"},
-        { text: "注册", current: false, type:"register"}
+        { text: "登录", current: true, type: "login" },
+        { text: "注册", current: false, type: "register" },
       ],
       ruleForm: {
         username: "",
         password: "",
         repeatPassword: "",
-        code: ""
+        code: "",
       },
       //模块值
-      model:"login",
+      model: "login",
       //验证规则
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }], //trigger 失去焦点触发
         password: [{ validator: validatePassword, trigger: "blur" }],
-        repeatPassword: [{ validator: validateRepeatPassword, trigger: "blur" }],
-        code: [{ validator: validateCode, trigger: "blur" }]
-      }
+        repeatPassword: [
+          { validator: validateRepeatPassword, trigger: "blur" },
+        ],
+        code: [{ validator: validateCode, trigger: "blur" }],
+      },
     };
   },
 
@@ -165,7 +178,7 @@ export default {
   methods: {
     toggleMenn(data) {
       console.log(data);
-      this.menuTab.forEach(elem => {
+      this.menuTab.forEach((elem) => {
         elem.current = false;
       });
       //高光
@@ -174,7 +187,7 @@ export default {
       this.model = data.type;
     },
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
           alert("submit!");
         } else {
@@ -182,8 +195,8 @@ export default {
           return false;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -192,7 +205,8 @@ export default {
   height: 100vh;
   background-color: #334a5f;
 }
-.lohin-wrap {
+.login-wrap {
+  padding-top: 150px;
 }
 .menu-tab {
   text-align: center;
